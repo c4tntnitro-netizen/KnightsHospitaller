@@ -1,0 +1,2 @@
+bar event id,tags,freq,prob,min dur,max dur,min timeout,max timeout,min accepted timeout,max accepted timeout,plugin
+koh_lore,"priority, non_repeatable",100,10,30,40,15,20,10000,10000,data.scripts.campaign.intel.missions.KoHLoreEvent

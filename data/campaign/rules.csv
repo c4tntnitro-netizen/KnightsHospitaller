@@ -1,0 +1,34 @@
+id,trigger,conditions,script,text,options,notes
+# KoH Lore,,,,,,
+kohLoreBlurbBar,koh_lore_blurbBar,,,"A white-cloaked figure sits in one corner of the bar, marked by a red cross stitched over the breast. The strangest thing is the empty space around them: in Kanta's Den, where every stool and standing place is usually fought over, no one pushes close.",,
+kohLoreOptionBar,koh_lore_optionBar,,,,koh_lore_startBar:Approach the white-cloaked stranger,
+kohLoreStartBar,DialogOptionSelected,$option == koh_lore_startBar,"$missionId = koh_lore
+Call $koh_lore_ref updateData","The din of Kanta's Den swallows most attempts at quiet conversation, but the stranger seems untouched by it. Their cloak is travel-stained, the red cross faded by vacuum-dust and sun, yet their hands are clean.
+
+On the table beside them sits a small kit of field dressings, sealant foam, and old-fashioned prayer beads worn almost smooth.
+
+""Walk with Ludd, captain,"" the Hospitaller says. ""Sit, if you mean no harm.""","koh_lore_who:""Who are you, and why are you here?""
+koh_lore_kanta:""Kanta lets you sit here untouched?""
+koh_lore_leave:Leave",
+kohLoreWho,DialogOptionSelected,$option == koh_lore_who,,"""We are the Knights Hospitaller,"" the stranger says. ""Not conquerors. Not judges. Not priests, though some of us pray more than is useful.""
+
+A bottle breaks somewhere behind you. Nobody at the table flinches.
+
+""A knight goes where there is suffering,"" they continue, ""and tries to make less of it. Pirates bleed. Pathers bleed. Hegemony inspectors bleed. The dying have fewer politics than the living.""","koh_lore_continue:Continue",
+kohLoreKanta,DialogOptionSelected,$option == koh_lore_kanta,,"For the first time, the Hospitaller smiles.
+
+""Kanta is not sentimental. She is practical. Men and women who expect to be shot prefer knowing someone nearby can close a wound.""
+
+They glance over the room, and more than one hardened pirate looks away.
+
+""There is an understanding. We do not preach in her hall. Her people do not interfere when stretchers are needed.""","koh_lore_continue:Continue",
+kohLoreContinue,DialogOptionSelected,$option == koh_lore_continue,$global.koh_lore_kantas_den_started = true,"Before you can ask another question, a shout rises by the bar. A deckhand collapses, one hand clamped over a wound darkening their shirt.
+
+The Hospitaller is already standing.
+
+""Forgive me, captain. Mercy rarely waits for ceremony.""
+
+They cross the room, and the crowd parts without a word.
+
+As they go, they nod once toward you. ""If you would know us better, look to Gilead. The Mercy keeps watch there.""",contact_acceptBarNoText:Leave them to their work,
+kohLoreLeave,DialogOptionSelected,$option == koh_lore_leave,BarCMD returnFromEvent false,,,
