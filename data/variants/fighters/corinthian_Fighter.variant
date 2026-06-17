@@ -1,0 +1,17 @@
+{
+	"quality":0.5,
+	"displayName":"Knight Fighter",
+	"hullId":"corinthian",
+	"variantId":"corinthian_Fighter",
+	"fluxVents":0,
+	"fluxCapacitors":0,
+	"hullMods":[],
+	"weaponGroups":[
+		{"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 000":"lightac",
+		 			"WS 001":"lightac",
+		 		   },
+		},
+	],
+}
