@@ -32,3 +32,40 @@ They cross the room, and the crowd parts without a word.
 
 As they go, they nod once toward you. ""If you would know us better, look to Gilead. The Mercy keeps watch there.""",contact_acceptBarNoText:Leave them to their work,
 kohLoreLeave,DialogOptionSelected,$option == koh_lore_leave,BarCMD returnFromEvent false,,,
+,,,,,,
+# KoH Mercy fleet dialogue,,,,,,
+kohLoreMercyGreeting,OpenCommLink,$entity.koh_lore_invictus_fleet score:1000,"KoHLoreCMD updateData
+$global.koh_lore_fleet_found = true
+FireAll KoHLoreMercyOptions","The Invictus answers with a plain white crest marked by a red cross.
+
+After a moment, the commander appears. Their armor is austere, the kind worn under a cloak rather than over a parade ground. Behind them, the bridge is quiet but busy: medicae stations, shuttle traffic plots, casualty manifests.
+
+""This is the Mercy of Gilead,"" the commander says. ""Speak, captain.""",,
+kohLoreMercyOptDeeds,KoHLoreMercyOptions,,,,"koh_lore_mercy_deeds:""There are Luddic matters you may know me by.""",
+kohLoreMercyOptGrant,KoHLoreMercyOptions,"$global.koh_lore_pk_black_hole
+!$global.koh_lore_invictus_granted",,,"koh_lore_mercy_grant:""I cast the Planetkiller into a black hole.""",
+kohLoreMercyOptLeave,KoHLoreMercyOptions,,,,"cutCommLink:Cut the comm link",
+kohLoreMercyDeeds,DialogOptionSelected,$option == koh_lore_mercy_deeds,"KoHLoreCMD updateData
+FireAll KoHLoreMercyDeedReplies
+FireAll KoHLoreMercyOptions","The commander studies you for a quiet moment, then nods to an aide off-screen.
+
+""We keep our own accounts,"" they say. ""Not all of them are written in ledgers.""",,
+kohLoreMercyDeedNone,KoHLoreMercyDeedReplies,!$global.koh_lore_any_luddic_done,,"""Then perhaps your road has not yet crossed ours in full,"" the commander says. ""Mercy is patient. Faith, less so.""",,
+kohLoreMercyDeedLPP,KoHLoreMercyDeedReplies,$global.koh_lore_lpp_done,,"""You walked the Pilgrim's Path,"" the commander says. ""Or near enough that the shrines remember your name.""",,
+kohLoreMercyDeedLKE,KoHLoreMercyDeedReplies,$global.koh_lore_lke_done,,"""The Knights Errant are not quiet about those who aid them,"" the commander says. ""You have been seen.""",,
+kohLoreMercyDeedBFFI,KoHLoreMercyDeedReplies,$global.koh_lore_bffi_done,,"""False Idols leaves a deep wound,"" the commander says. ""Some wounds close. Some teach.""",,
+kohLoreMercyDeedPKKnights,KoHLoreMercyDeedReplies,$global.koh_lore_pk_knights,,"""Gideon Oak's people recorded your surrender of the Planetkiller,"" the commander says. ""A grave deed, and not without merit.""",,
+kohLoreMercyGrant,DialogOptionSelected,$option == koh_lore_mercy_grant,KoHLoreCMD grantInvictus,,koh_lore_mercy_done:Continue,
+kohLoreMercyDone,DialogOptionSelected,$option == koh_lore_mercy_done,KoHLoreCMD dismissDialog,,,
+,,,,,,
+# KoH Planetkiller black-hole disposal,,,,,,
+kohLorePKBlackHole,OpenInteractionDialog,"KoHLoreCMD isBlackHole
+PlayerHasCargo planetkiller
+!$player.turnedInPlanetkiller score:1000","PrintDescription 3
+ShowDefaultVisual","Your $shipOrFleet holds station at the edge of the abyss.
+
+The Planetkiller is secured in your flagship under more locks, prayers, threat protocols, and armed watches than any object should require. Every faction in the Sector would kill for it. Every faction in the Sector would claim they had no choice.
+
+The black hole waits without opinion.","koh_lore_pk_black_hole_dispose:Cast the Planetkiller into the black hole
+defaultLeave:Leave",
+kohLorePKBlackHoleDispose,DialogOptionSelected,$option == koh_lore_pk_black_hole_dispose,KoHLoreCMD disposePlanetkiller,,defaultLeave:Leave,

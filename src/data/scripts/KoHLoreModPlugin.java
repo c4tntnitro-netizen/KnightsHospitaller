@@ -2,11 +2,16 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -27,7 +32,10 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
     public static final String FLEET_MEMORY_KEY = "$koh_lore_invictus_fleet";
     public static final String SPAWNED_KEY = "$koh_lore_invictus_spawned";
+    public static final String ATTACKED_MERCY_KEY = "$koh_lore_attacked_mercy";
+    public static final String INVICTUS_GRANTED_KEY = "$koh_lore_invictus_granted";
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
+    public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
 
     private static final Logger log = Global.getLogger(KoHLoreModPlugin.class);
 
@@ -57,13 +65,32 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
     private void spawnFleetIfNeeded() {
         try {
+            enableBlackHoleInteractions();
+            if (Global.getSector().getMemoryWithoutUpdate().getBoolean(INVICTUS_GRANTED_KEY) ||
+                    Global.getSector().getMemoryWithoutUpdate().getBoolean(ATTACKED_MERCY_KEY)) {
+                return;
+            }
             if (findHospitallerFleet() != null) {
                 Global.getSector().getMemoryWithoutUpdate().set(SPAWNED_KEY, true);
+                ensureMercyListener(findHospitallerFleet());
                 return;
             }
             spawnFleet();
         } catch (Exception e) {
             log.error("KoHLore: failed to spawn Hospitaller Invictus", e);
+        }
+    }
+
+    private void enableBlackHoleInteractions() {
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+
+        for (StarSystemAPI system : sector.getStarSystems()) {
+            for (PlanetAPI planet : system.getPlanets()) {
+                if (!planet.isBlackHole()) continue;
+                planet.addTag(Tags.HAS_INTERACTION_DIALOG);
+                planet.removeTag(Tags.NON_CLICKABLE);
+            }
         }
     }
 
@@ -117,6 +144,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
         fleet.setTransponderOn(true);
         Misc.makeImportant(fleet, "koh_lore");
+        ensureMercyListener(fleet);
 
         fleet.getFlagship().getRepairTracker().setCR(fleet.getFlagship().getRepairTracker().getMaxCR());
         fleet.getFleetData().sort();
@@ -128,5 +156,58 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
         sector.getMemoryWithoutUpdate().set(SPAWNED_KEY, true);
         log.info("KoHLore: spawned Hospitaller Invictus around Gilead");
+    }
+
+    public static void ensureMercyListener(CampaignFleetAPI fleet) {
+        if (fleet == null) return;
+        for (FleetEventListener listener : fleet.getEventListeners()) {
+            if (listener instanceof MercyFleetListener) return;
+        }
+        fleet.addEventListener(new MercyFleetListener());
+    }
+
+    public static void applyMercyAttackPenalty() {
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+        if (sector.getMemoryWithoutUpdate().getBoolean(ATTACKED_MERCY_KEY)) return;
+
+        sector.getMemoryWithoutUpdate().set(ATTACKED_MERCY_KEY, true);
+        int atrocities = sector.getPlayerMemoryWithoutUpdate().getInt("$atrocities");
+        sector.getPlayerMemoryWithoutUpdate().set("$atrocities", atrocities + 2);
+
+        for (FactionAPI faction : sector.getAllFactions()) {
+            if (faction == null) continue;
+            if (faction.isPlayerFaction() || faction.isNeutralFaction()) continue;
+            if (!faction.isShowInIntelTab()) continue;
+            if (Factions.PLAYER.equals(faction.getId()) || Factions.NEUTRAL.equals(faction.getId())) continue;
+
+            faction.adjustRelationship(Factions.PLAYER, MERCY_ATTACK_REP_DELTA);
+            faction.getMemoryWithoutUpdate().set(MemFlags.FACTION_SATURATION_BOMBARED_BY_PLAYER, true);
+        }
+
+        if (sector.getCampaignUI() != null) {
+            sector.getCampaignUI().addMessage(
+                    "Your attack on the Knights Hospitaller Mercy is condemned as an atrocity across the Sector.",
+                    Misc.getNegativeHighlightColor());
+        }
+    }
+
+    public static class MercyFleetListener implements FleetEventListener {
+        @Override
+        public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) {
+            if (fleet == null || battle == null) return;
+            if (!fleet.getMemoryWithoutUpdate().getBoolean(FLEET_MEMORY_KEY)) return;
+            if (!battle.isPlayerInvolved() || !battle.isInvolved(fleet)) return;
+            if (battle.onPlayerSide(fleet)) return;
+
+            applyMercyAttackPenalty();
+        }
+
+        @Override
+        public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, CampaignEventListener.FleetDespawnReason reason, Object param) {
+            if (fleet != null) {
+                fleet.removeEventListener(this);
+            }
+        }
     }
 }
