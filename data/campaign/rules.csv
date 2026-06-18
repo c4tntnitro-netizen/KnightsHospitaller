@@ -46,15 +46,55 @@ kohLoreMercyOptGrant,KoHLoreMercyOptions,"$global.koh_lore_pk_black_hole
 !$global.koh_lore_invictus_granted",,,"koh_lore_mercy_grant:""I cast the Planetkiller into a black hole.""",
 kohLoreMercyOptLeave,KoHLoreMercyOptions,,,,"cutCommLink:Cut the comm link",
 kohLoreMercyDeeds,DialogOptionSelected,$option == koh_lore_mercy_deeds,"KoHLoreCMD updateData
-FireAll KoHLoreMercyDeedReplies
-FireAll KoHLoreMercyOptions","The commander studies you for a quiet moment, then nods to an aide off-screen.
+FireAll KoHLoreMercyDeedIntro
+FireAll KoHLoreMercyDeedOptions","The commander studies you for a quiet moment, then nods to an aide off-screen.
 
-""We keep our own accounts,"" they say. ""Not all of them are written in ledgers.""",,
-kohLoreMercyDeedNone,KoHLoreMercyDeedReplies,!$global.koh_lore_any_luddic_done,,"""Then perhaps your road has not yet crossed ours in full,"" the commander says. ""Mercy is patient. Faith, less so.""",,
-kohLoreMercyDeedLPP,KoHLoreMercyDeedReplies,$global.koh_lore_lpp_done,,"""You walked the Pilgrim's Path,"" the commander says. ""Or near enough that the shrines remember your name.""",,
-kohLoreMercyDeedLKE,KoHLoreMercyDeedReplies,$global.koh_lore_lke_done,,"""The Knights Errant are not quiet about those who aid them,"" the commander says. ""You have been seen.""",,
-kohLoreMercyDeedBFFI,KoHLoreMercyDeedReplies,$global.koh_lore_bffi_done,,"""False Idols leaves a deep wound,"" the commander says. ""Some wounds close. Some teach.""",,
-kohLoreMercyDeedPKKnights,KoHLoreMercyDeedReplies,$global.koh_lore_pk_knights,,"""Gideon Oak's people recorded your surrender of the Planetkiller,"" the commander says. ""A grave deed, and not without merit.""",,
+""We keep our own accounts,"" they say. ""Not all of them are written in ledgers.""
+
+They look back to you. ""Tell me.""",,
+kohLoreMercyDeedIntroNone,KoHLoreMercyDeedIntro,!$global.koh_lore_any_luddic_done,,"""Then perhaps your road has not yet crossed ours in full,"" the commander says. ""Mercy is patient. Faith, less so.""",,
+kohLoreMercyDeedOptLPP,KoHLoreMercyDeedOptions,$global.koh_lore_lpp_done,,,"koh_lore_deed_lpp:""I visited all the shrines of the Pilgrim's Path.""",
+kohLoreMercyDeedOptLKE,KoHLoreMercyDeedOptions,$global.koh_lore_lke_done,,,"koh_lore_deed_lke:""I found Jethro Bornanew.""",
+kohLoreMercyDeedOptBFFI,KoHLoreMercyDeedOptions,$global.koh_lore_bffi_done,,,"koh_lore_deed_bffi:""I dealt with the false relics.""",
+kohLoreMercyDeedOptPKKnights,KoHLoreMercyDeedOptions,$global.koh_lore_pk_knights,,,"koh_lore_deed_pk_knights:""I surrendered a Planetkiller to the Knights of Ludd.""",
+kohLoreMercyDeedOptBack,KoHLoreMercyDeedOptions,,,,"koh_lore_deed_back:Ask about something else",
+kohLoreMercyDeedLPP,DialogOptionSelected,$option == koh_lore_deed_lpp,FireAll KoHLoreMercyOptions,"You tell them of the shrines, of the pilgrim roads, of Gilead's green light and the quieter places where the faithful go to remember what Ludd chose.
+
+The commander listens without interruption.
+
+""Then you know the first mercy of pilgrimage,"" they say. ""A pilgrim does not seize the shrine and carry it home in a crate. The path changes them, or it does nothing.""
+
+They look away for a moment, toward the casualty plots behind the bridge glass.
+
+""One day you may be offered a relic of terrible power, and every voice will insist it can be guarded, used, justified. Remember the pilgrim. Some things are honored only by refusing to possess them.""",,
+kohLoreMercyDeedLKE,DialogOptionSelected,$option == koh_lore_deed_lke,FireAll KoHLoreMercyOptions,"You tell them of Jethro Bornanew, of Chalcedon, and of a knight whose life had become a duty other people kept naming for him.
+
+The commander exhales slowly.
+
+""A knight errant is not a weapon someone misplaced,"" they say. ""Nor is a sacred duty proven by chaining another soul to it.""
+
+Their expression hardens, but not toward you.
+
+""Should a day come when all the Sector demands that you keep hold of damnation for the sake of order, remember Bornanew. Custody is not redemption. Possession is not mercy.""",,
+kohLoreMercyDeedBFFI,DialogOptionSelected,$option == koh_lore_deed_bffi,FireAll KoHLoreMercyOptions,"You speak of false idols: relics made by machines, faith twisted into leverage, and the damage done by those who mistake sacred symbols for sacred power.
+
+The commander is silent long enough that the comm pickup catches only the low murmur of the Mercy's bridge.
+
+""Then you have seen the shape of the snare,"" they say at last. ""The Devil's bargain never begins as evil. It begins as custody. Necessity. The claim that a righteous hand may safely hold what no hand should hold.""
+
+They lean closer to the camera.
+
+""Resist the Devil's Bargain. When the hour comes, let the abyss take what the living cannot be trusted to keep.""",,
+kohLoreMercyDeedPKKnights,DialogOptionSelected,$option == koh_lore_deed_pk_knights,FireAll KoHLoreMercyOptions,"You tell them that you gave a Planetkiller into the custody of the Knights of Ludd.
+
+The commander bows their head.
+
+""A grave deed,"" they say. ""And better than selling apocalypse to the highest bidder.""
+
+They raise their eyes again.
+
+""But custody is still custody, captain. Even a righteous vault is a vault. Mercy asks more than that, when it can.""",,
+kohLoreMercyDeedBack,DialogOptionSelected,$option == koh_lore_deed_back,FireAll KoHLoreMercyOptions,"The commander inclines their head and waits.",,
 kohLoreMercyGrant,DialogOptionSelected,$option == koh_lore_mercy_grant,KoHLoreCMD grantInvictus,,koh_lore_mercy_done:Continue,
 kohLoreMercyDone,DialogOptionSelected,$option == koh_lore_mercy_done,KoHLoreCMD dismissDialog,,,
 ,,,,,,

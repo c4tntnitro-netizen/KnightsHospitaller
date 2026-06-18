@@ -69,7 +69,7 @@ public class KoHLoreCMD extends BaseCommandPlugin {
         global.set("$koh_lore_lpp_done", lpp);
         global.set("$koh_lore_lke_done", lke);
         global.set("$koh_lore_bffi_done", bffi);
-        global.set("$koh_lore_any_luddic_done", lpp || lke || bffi);
+        global.set("$koh_lore_any_luddic_done", lpp || lke || bffi || pkKnights);
         global.set("$koh_lore_pk_black_hole", pkBlackHole);
         global.set("$koh_lore_pk_knights", pkKnights);
         global.set("$koh_lore_invictus_present", KoHLoreModPlugin.findHospitallerFleet() != null);
