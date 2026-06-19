@@ -37,6 +37,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String SPAWNED_KEY = "$koh_lore_invictus_spawned";
     public static final String ATTACKED_MERCY_KEY = "$koh_lore_attacked_mercy";
     public static final String INVICTUS_GRANTED_KEY = "$koh_lore_invictus_granted";
+    public static final String PEACEFUL_HANDOFF_KEY = "$koh_lore_peaceful_invictus_handoff";
     public static final String GETHSEMANE_LISTENER_KEY = "$koh_lore_gethsemane_listener_installed";
     public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v2";
     public static final String KH_FACTION_ID = "knights_hospitaller";
@@ -238,7 +239,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         fleet.getFlagship().setVariant(fleet.getFlagship().getVariant(), false, true);
         fleet.getFlagship().getVariant().setSource(VariantSource.REFIT);
         fleet.getFlagship().getVariant().addTag(Tags.VARIANT_UNBOARDABLE);
-        fleet.getFlagship().setShipName("Mercy of Gilead");
+        fleet.getFlagship().setShipName("Abundant Mercy");
 
         for (int i = 0; i < 3; i++) {
             addShip(fleet, "legion_Strike");
@@ -294,6 +295,23 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         fleet.addEventListener(new MercyFleetListener());
     }
 
+    public static void markPeacefulInvictusHandoff(CampaignFleetAPI fleet) {
+        if (fleet == null) return;
+        fleet.getMemoryWithoutUpdate().set(PEACEFUL_HANDOFF_KEY, true);
+        fleet.getMemoryWithoutUpdate().unset(FLEET_MEMORY_KEY);
+        Misc.makeUnimportant(fleet, "koh_lore");
+        FleetEventListener toRemove = null;
+        for (FleetEventListener listener : fleet.getEventListeners()) {
+            if (listener instanceof MercyFleetListener) {
+                toRemove = listener;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            fleet.removeEventListener(toRemove);
+        }
+    }
+
     public static void applyMercyAttackPenalty() {
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
@@ -324,6 +342,8 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         @Override
         public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) {
             if (fleet == null || battle == null) return;
+            if (fleet.getMemoryWithoutUpdate().getBoolean(PEACEFUL_HANDOFF_KEY)) return;
+            if (Global.getSector().getMemoryWithoutUpdate().getBoolean(INVICTUS_GRANTED_KEY)) return;
             if (!fleet.getMemoryWithoutUpdate().getBoolean(FLEET_MEMORY_KEY)) return;
             if (!battle.isPlayerInvolved() || !battle.isInvolved(fleet)) return;
             if (battle.onPlayerSide(fleet)) return;
