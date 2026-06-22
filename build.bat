@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
-rem ---- KoH Lore build script ----
-rem Compiles src\ into jars\KoHLore.jar using the JDK bundled with Starsector.
+rem ---- Knights Hospitallar build script ----
+rem Compiles src\ into jars\KnightsHospitallar.jar using the JDK bundled with Starsector.
 
 set "ROOT=%~dp0"
 set "JDK=%ROOT%..\..\jdk-23+7\bin"
@@ -29,7 +29,7 @@ if errorlevel 1 (
 )
 
 if not exist "%ROOT%jars" mkdir "%ROOT%jars"
-"%JDK%\jar.exe" cf "%ROOT%jars\KoHLore.jar" -C "%ROOT%out" .
+"%JDK%\jar.exe" cf "%ROOT%jars\KnightsHospitallar.jar" -C "%ROOT%out" .
 if errorlevel 1 (
   echo.
   echo JAR PACKAGING FAILED
@@ -39,5 +39,5 @@ if errorlevel 1 (
 
 del "%ROOT%sources.txt" 2>nul
 echo.
-echo BUILD OK -^> jars\KoHLore.jar
+echo BUILD OK -^> jars\KnightsHospitallar.jar
 endlocal
