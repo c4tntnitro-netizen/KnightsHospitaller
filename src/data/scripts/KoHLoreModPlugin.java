@@ -43,7 +43,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v3";
     public static final String KH_FACTION_ID = Factions.LUDDIC_CHURCH;
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
-    public static final String GABRIEL_PORTRAIT = "graphics/portraits/characters/knight_surgeon_gabriel_malachi.png";
+    public static final String GABRIEL_PORTRAIT_ID = "koh_lore_gabriel_malachi";
     public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
 
     private static final Logger log = Global.getLogger(KoHLoreModPlugin.class);
@@ -304,7 +304,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         if (person == null) return;
         person.setFaction(KH_FACTION_ID);
         person.setGender(FullName.Gender.MALE);
-        person.setPortraitSprite(GABRIEL_PORTRAIT);
+        person.setPortraitSprite(Global.getSettings().getSpriteName("characters", GABRIEL_PORTRAIT_ID));
         if (person.getName() != null) {
             person.getName().setFirst("Gabriel");
             person.getName().setLast("Malachi");

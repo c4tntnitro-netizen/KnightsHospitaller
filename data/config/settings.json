@@ -1,5 +1,10 @@
 {
   "ruleCommandPackages": [
     "data.campaign.rulecmd"
-  ]
+  ],
+  "graphics": {
+    "characters": {
+      "koh_lore_gabriel_malachi": "graphics/portraits/characters/knight_surgeon_gabriel_malachi.png"
+    }
+  }
 }
