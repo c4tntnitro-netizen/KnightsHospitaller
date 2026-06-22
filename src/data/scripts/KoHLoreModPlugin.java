@@ -43,6 +43,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v3";
     public static final String KH_FACTION_ID = Factions.LUDDIC_CHURCH;
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
+    public static final String GABRIEL_PORTRAIT = "graphics/portraits/characters/knight_surgeon_gabriel_malachi.png";
     public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
 
     private static final Logger log = Global.getLogger(KoHLoreModPlugin.class);
@@ -224,11 +225,10 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
     private void ensureMaleMercyCommander(CampaignFleetAPI fleet) {
         if (fleet == null || fleet.getCommander() == null) return;
-        fleet.getCommander().setFaction(KH_FACTION_ID);
-        fleet.getCommander().setGender(FullName.Gender.MALE);
-        if (fleet.getCommander().getName() != null) {
-            fleet.getCommander().getName().setGender(FullName.Gender.MALE);
-        }
+        configureGabrielPhiladelphi(fleet.getCommander());
+        fleet.getCommander().setRankId(Ranks.SPACE_ADMIRAL);
+        fleet.getCommander().setPostId(Ranks.POST_FLEET_COMMANDER);
+        fleet.getCommander().setPersonality(Personalities.STEADY);
     }
 
     private void ensureHospitallerFleetFaction(CampaignFleetAPI fleet) {
@@ -255,8 +255,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
                 faction, 7,
                 OfficerManagerEvent.SkillPickPreference.ANY,
                 false, null, true, true, 1, random);
-        commander.setGender(FullName.Gender.MALE);
-        commander.getName().setGender(FullName.Gender.MALE);
+        configureGabrielPhiladelphi(commander);
         commander.setRankId(Ranks.SPACE_ADMIRAL);
         commander.setPostId(Ranks.POST_FLEET_COMMANDER);
         commander.setPersonality(Personalities.STEADY);
@@ -299,6 +298,18 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         }
         fleet.getFleetData().sort();
         fleet.forceSync();
+    }
+
+    private static void configureGabrielPhiladelphi(PersonAPI person) {
+        if (person == null) return;
+        person.setFaction(KH_FACTION_ID);
+        person.setGender(FullName.Gender.MALE);
+        person.setPortraitSprite(GABRIEL_PORTRAIT);
+        if (person.getName() != null) {
+            person.getName().setFirst("Gabriel");
+            person.getName().setLast("Malachi");
+            person.getName().setGender(FullName.Gender.MALE);
+        }
     }
 
     private void addShip(CampaignFleetAPI fleet, String variantId) {
