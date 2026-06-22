@@ -32,7 +32,7 @@ jobs:
 
           New-Item -ItemType Directory -Force -Path $mod | Out-Null
 
-          foreach ($item in @("data", "graphics", "jars", "src", "build.bat", "mod_info.json")) {
+          foreach ($item in @("data", "graphics", "jars", "src", "build.bat", "mod_info.json", "README.md")) {
             Copy-Item -LiteralPath $item -Destination $mod -Recurse -Force
           }
 
