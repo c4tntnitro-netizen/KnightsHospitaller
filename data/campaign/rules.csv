@@ -17,12 +17,12 @@ A bottle breaks somewhere behind you. Nobody at the table flinches.
 ""A knight hospitallar goes where there is suffering,"" they continue, ""and tries to make less of it. Pirates bleed. Pathers bleed. All bleed. There but for the grace of God, I might save body and soul.""","koh_lore_continue:Continue",
 kohLoreKanta,DialogOptionSelected,$option == koh_lore_kanta,,"For the first time, the Hospitaller smiles.
 
-""I'd sooner drink our disinfectant than the simu-beers we have on hand.""
+""And I'd sooner drink our disinfectant than the simu-beers we have on hand.""
 
 They glance over the room, and more than one hardened pirate looks away.
 
-""There is an understanding. I come and go as my Path wills. And they do not interfere. Ludd have mercy.""","koh_lore_continue:Continue",
-kohLoreContinue,DialogOptionSelected,$option == koh_lore_continue,$global.koh_lore_kantas_den_started = true,"Before you can ask another question, a shout rises by the bar. Several shots ring out, and the bar starts to scatter. A deckhand collapses, one hand clamped over a wound darkening their shirt.
+""There is an understanding. I come and go as Ludd wills. And they do not interfere. Ludd have mercy.""","koh_lore_continue:Continue",
+kohLoreContinue,DialogOptionSelected,$option == koh_lore_continue,$global.koh_lore_kantas_den_started = true,"Before you can ask another question, a shout rises by the bar. Several shots ring out, and the bar starts to clear out. A deckhand collapses, one hand clamped over a wound darkening their shirt.
 
 The Hospitaller is already standing.
 
@@ -57,18 +57,38 @@ kohLoreMercyIntroDame,DialogOptionSelected,$option == koh_lore_intro_dame,"$play
 FireAll KoHLoreMercyOptions","The Knight-Brother bows his head.
 
 ""Well met, Dame $playerName. May your path be righteous, and your strength buoyed to meet your burdens.""",,
-kohLoreMercyIntroJohn,DialogOptionSelected,$option == koh_lore_intro_john,"$player.koh_lore_met_hospitaller_captain = true
-FireAll KoHLoreMercyOptions","""John... Starsector,"" the Knight-Brother repeats.
+kohLoreMercyIntroJohn,DialogOptionSelected,$option == koh_lore_intro_john,FireAll KoHLoreMercyIntroJohnStarsectorOptions,"""John... "" the Knight-Brother repeats. ""Starsector.""
 
-""Remember that name. Because I just made it up, and I'm going to forget.""
+The elderly man's gaze is intense and withering.",,
+kohLoreMercyIntroJohnDarkOpt,KoHLoreMercyIntroJohnStarsectorOptions,,,,"koh_lore_intro_john_dark:Turn off all non-essential systems, reducing the range at which you can be detected.",
+kohLoreMercyIntroJohnJokeOpt,KoHLoreMercyIntroJohnStarsectorOptions,,,,"koh_lore_intro_john_joke:""Just a joke, Curate-Commander. Captain $playerName, at your service.""",
+kohLoreMercyIntroJohnDark,DialogOptionSelected,$option == koh_lore_intro_john_dark,"$player.koh_lore_met_hospitaller_captain = true
+AddTextSmall ""Received: [DSM-508-TR] Diagonistic and Statistical Analysis of Mental Disorders -- ASD"" highlight
+FireAll KoHLoreMercyOptions","Your second-in-command interjects.
 
-The Knight-Brother studies you for a silent moment, then decides not to ask.",,
-kohLoreMercyIntroJane,DialogOptionSelected,$option == koh_lore_intro_jane,"$player.koh_lore_met_hospitaller_captain = true
-FireAll KoHLoreMercyOptions","""Jane... Starsector,"" the Knight-Brother repeats.
+""I deeply apologize for our commanding officer. He's a unique dispostion.""
 
-""Remember that name. Because I just made it up. I'm going to forget.""
+""Ludd's peace. I've seen this condition before. Transmitting medicae scripts now.""",,
+kohLoreMercyIntroJohnJoke,DialogOptionSelected,$option == koh_lore_intro_john_joke,"$player.koh_lore_met_hospitaller_captain = true
+FireAll KoHLoreMercyOptions","The Knight-Brother studies you for a heartbeat, then inclines his head.
 
-The Knight-Brother studies you for a silent moment, then decides not to ask.",,
+""Then be welcome under our sigil, captain.""",,
+kohLoreMercyIntroJane,DialogOptionSelected,$option == koh_lore_intro_jane,FireAll KoHLoreMercyIntroJaneStarsectorOptions,"""Jane... "" the Knight-Brother repeats. ""Starsector.""
+
+The elderly man's gaze is intense and withering.",,
+kohLoreMercyIntroJaneDarkOpt,KoHLoreMercyIntroJaneStarsectorOptions,,,,"koh_lore_intro_jane_dark:Turn off all non-essential systems, reducing the range at which you can be detected.",
+kohLoreMercyIntroJaneJokeOpt,KoHLoreMercyIntroJaneStarsectorOptions,,,,"koh_lore_intro_jane_joke:""Just a joke, Curate-Commander. Captain $playerName, at your service.""",
+kohLoreMercyIntroJaneDark,DialogOptionSelected,$option == koh_lore_intro_jane_dark,"$player.koh_lore_met_hospitaller_captain = true
+AddTextSmall ""Received: [DSM-508-TR] Diagonistic and Statistical Analysis of Mental Disorders -- ASD"" highlight
+FireAll KoHLoreMercyOptions","Your second-in-command interjects.
+
+""I'm sorry for our commanding officer. She... means well."" 
+
+""Ludd's peace. I've seen this condition before. Transmitting medicae scripts now.""",,
+kohLoreMercyIntroJaneJoke,DialogOptionSelected,$option == koh_lore_intro_jane_joke,"$player.koh_lore_met_hospitaller_captain = true
+FireAll KoHLoreMercyOptions","The Knight-Brother studies you for a heartbeat, then inclines his head.
+
+""Then be welcome under our sigil, captain.""",,
 kohLoreMercyGreeting,OpenCommLink,$entity.koh_lore_invictus_fleet score:1000,"KoHLoreCMD updateData
 $global.koh_lore_fleet_found = true
 FireAll KoHLoreMercyOptions","The Invictus answers with a plain white crest marked by a red cross.
@@ -147,7 +167,7 @@ FireAll KoHLoreMercyOptions","Machinery is not glamorous charity, but it rebuild
 For a moment, the Knight-Brother's expression is solemn enough to feel like prayer.",,
 kohLoreMercyDonateBack,DialogOptionSelected,$option == koh_lore_donate_back,FireAll KoHLoreMercyOptions,"The Knight-Brother waits.",,
 kohLoreMercyChurchFeat,DialogOptionSelected,$option == koh_lore_church_feats,"KoHLoreCMD updateData
-FireAll KoHLoreMercyChurchFeatOptions","Your deeds within the Church are known to us, $PlayerSirOrMadam. Some speak of you with gratitude. Others with scorn. That is often the way of those who live in the shadow of this fallen world. I will not pretend your path is simple. But I believe you have done the work of God, and that is no small thing in this age.",,
+FireAll KoHLoreMercyChurchFeatOptions","Your deeds within the Church are known to us, $PlayerSirOrMadam. Some speak of you with gratitude and others with scorn. That is often the way of those who live in the shadow of this fallen world. I will not pretend your path is simple. But I believe you have done the work of Ludd, and that is no small feat.",,
 kohLoreMercyDeeds,DialogOptionSelected,$option == koh_lore_mercy_deeds,"KoHLoreCMD updateData
 FireAll KoHLoreMercyDeedOptions","The Knight-Brother inclines his head.
 
@@ -188,7 +208,7 @@ The commander exhales slowly.
 
 Their expression hardens, but not toward you.
 
-""Should a day come when all the Sector demands that you keep hold of damnation for the sake of order, remember Bornanew. Custody is not redemption. The godly path may be to let. Go.""",,
+""Should a day come when all the Sector demands that you keep hold of damnation for the sake of order, remember Bornanew. Custody is not redemption. The godly path may be to let go.""",,
 kohLoreMercyDeedBFFI,DialogOptionSelected,$option == koh_lore_deed_bffi,FireAll KoHLoreMercyOptions,"You speak of Menes Yaribay, of Olinadu, and of the false glove whose true counterpart lay untouched in the archives on Tartessus. You tell them how the trail led from a collector's vanity to a faulty forge hidden among the lost and the damned.
 
 The commander is silent long enough that the comm pickup catches only the low murmur of the Mercy's bridge.
@@ -221,7 +241,7 @@ He then ignores you.
 The Knight-Brother rubs his chin in contemplation.
 
 ""What I can offer you is this: a Great Labor.""","koh_lore_great_labor_ask:""A Great Labor?""",
-kohLoreMercyGreatLaborAsk,DialogOptionSelected,$option == koh_lore_great_labor_ask,FireAll KoHLoreMercyGreatLaborVowOptions,"The Knight-Brother nods his head. ""All of us who aspire to rise to the rank of commanding officer are given one and only one task. Accomplish a Great Labor, endowed to us by the Grace of God, without expectation of compensation or reward. Do this in the name of God, then I will formally endow you with Knighthood in our Order, and the solemn duty of this consecrated shelter.""",,
+kohLoreMercyGreatLaborAsk,DialogOptionSelected,$option == koh_lore_great_labor_ask,FireAll KoHLoreMercyGreatLaborVowOptions,"The Knight-Brother nods his head. ""All of us who aspire to rise to the rank of commanding officer are given one and only one task. Accomplish a Great Labor, endowed to us by the Grace of God, without expectation of compensation or reward. Do this in the name of Ludd, then I will formally endow you with Knighthood in our Order, and the solemn duty of this consecrated shelter-ship.""",,
 kohLoreMercyGreatLaborVowDoneOpt,KoHLoreMercyGreatLaborVowOptions,,,,"koh_lore_great_labor_vow_done:It will be done.",
 kohLoreMercyGreatLaborVowRightOpt,KoHLoreMercyGreatLaborVowOptions,,,,"koh_lore_great_labor_vow_right:""I'll do this, but because it's the right thing to do.""",
 kohLoreMercyGreatLaborVowThinkOpt,KoHLoreMercyGreatLaborVowOptions,,,,"koh_lore_great_labor_defer:""I'll think about it.""",
@@ -235,7 +255,7 @@ kohLoreMercyGreatLaborDefer,DialogOptionSelected,$option == koh_lore_great_labor
 kohLoreMercyGreatLaborDetails,DialogOptionSelected,$option == koh_lore_great_labor_details,,"The Great Labor is an undertaking that is unique to each aspirant in our Order. It is a once-in-a-lifetime calling, whereby by the Grace of God and the divine example of the Prophet Ludd, the aspirant tilts against the many evils of Moloch.
 
 Thereby I, Knight-Brother of the Order of the Hospitaller, so bestow upon you a Great Labor to accomplish. Sally out into the night and the stars. Be a light upon a hill through which the Luddic Faith can shine. Let the burning flames of the billions of souls in the stars be your guardian charge.","koh_lore_great_labor_vague:""That's... kind of vague.""",
-kohLoreMercyGreatLaborVague,DialogOptionSelected,$option == koh_lore_great_labor_vague,,"The path before you is between you and God. When you walk, the ground trembles. When you speak, God listens. I believe your decisions will cascade throughout the Sector.","koh_lore_great_labor_faith:""Why do you believe that?""",
+kohLoreMercyGreatLaborVague,DialogOptionSelected,$option == koh_lore_great_labor_vague,,"The path before you is between you and God. When you walk, the ground trembles. When you speak, the heavens listens. I believe your decisions will cascade throughout the Sector.","koh_lore_great_labor_faith:""Why do you believe that?""",
 kohLoreMercyGreatLaborFaith,DialogOptionSelected,$option == koh_lore_great_labor_faith,,"""You see, I have faith."" The Knight-Brother smiles, then closes the connection.",cutCommLink:Continue,
 kohLoreMercyDeedPKBlackHole,DialogOptionSelected,$option == koh_lore_deed_pk_black_hole,"KoHLoreCMD completeGreatLabor
 AddXP 100000
@@ -246,11 +266,11 @@ AdjustRep luddic_church 15","The Knight-Brother is silent for a long time. When 
 
 The Knight-Brother reaches down under his console and retrieves a small, thin box. They open it and hold its contents up to the camera. A simple, unadorned sword of steel. He brings the sword down and places his hands on its hilt.
 
-""Lamb of God. Your Great Labor is done. You have saved the lives of countless souls."" 
+""Lamb of God. Your Great Labor is done. You have saved the lives of countless upon countless souls."" 
 
 ""Rise, $playerName, Knight of Ludd, Order of the Hospitaller.""
 
-""Take command of our vanguard flagship and lead our men to further service in the name of our God.""",cutCommLink:Continue,
+""Take command of our vanguard flagship and lead our men to further service, in the name of Ludd and the path of God.""",cutCommLink:Continue,
 kohLoreMercyDone,DialogOptionSelected,$option == koh_lore_mercy_done,KoHLoreCMD dismissDialog,,,
 ,,,,,,
 # KoH Planetkiller black-hole disposal,,,,,,
@@ -259,7 +279,7 @@ PlayerHasCargo planetkiller
 !$player.turnedInPlanetkiller score:1000","PrintDescription 3
 ShowDefaultVisual","Your $shipOrFleet holds station at the edge of the abyss.
 
-The Planetkiller is secured in your flagship under more locks, prayers, threat protocols, and armed watches than any object should require. Every faction in the Sector would kill for it. Every faction in the Sector would claim they had no choice.
+The Planetkiller is secured in your flagship under more locks, prayers, threat protocols, and armed watches than any object should require.
 
 The black hole waits without opinion.","koh_lore_pk_black_hole_dispose:Cast the Planetkiller into the black hole
 defaultLeave:Leave",
