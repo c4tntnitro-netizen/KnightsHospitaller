@@ -9,7 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 public class GethsemaneRescueBay extends BaseHullMod {
 
     public static final String RECOVERY_SHUTTLES_ID = "recovery_shuttles";
-    public static final float FIGHTER_CREW_LOSS_MULT = 0.05f; // 95% reduction
+    public static final float FIGHTER_CREW_LOSS_MULT = 0.2f; // 80% reduction
 
     @Override
     public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
