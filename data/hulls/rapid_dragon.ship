@@ -29,7 +29,7 @@
     ],
     "builtInMods": [
         "civgrade",
-        "insulatedengine"
+        "auxiliarythrusters"
     ],
     "center": [
         50,

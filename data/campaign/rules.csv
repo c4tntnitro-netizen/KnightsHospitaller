@@ -195,27 +195,27 @@ kohLoreMercyDeedLPP,DialogOptionSelected,$option == koh_lore_deed_lpp,FireAll Ko
 
 The commander listens without interruption.
 
-""Then you know the first mercy of pilgrimage,"" they say. ""A pilgrim does not seize the shrine and carry it home in a crate. The path changes them, or it does nothing.""
+""Then you know the first mercy of pilgrimage,"" he says. ""A pilgrim does not seize the shrine and carry it home in a crate. The path changes them, or it does nothing.""
 
-They look away for a moment, toward the casualty plots behind the bridge glass.
+He looks away for a moment, toward the casualty plots behind the bridge glass.
 
 ""And yet, your path continues still. I look forwards to witnessing your growth, Lost Lamb.""",,
 kohLoreMercyDeedLKE,DialogOptionSelected,$option == koh_lore_deed_lke,FireAll KoHLoreMercyOptions,"You tell them of Jethro Bornanew, of Chalcedon, and of a knight whose life had become a duty other people kept naming for him.
 
 The commander exhales slowly.
 
-""A knight errant is not a weapon someone misplaced,"" they say. ""Nor is a sacred duty proven by chaining another soul to it.""
+""A knight errant is not a weapon someone misplaced,"" he says. ""Nor is a sacred duty proven by chaining another soul to it.""
 
-Their expression hardens, but not toward you.
+His expression hardens, but not toward you.
 
 ""Should a day come when all the Sector demands that you keep hold of damnation for the sake of order, remember Bornanew. Custody is not redemption. The godly path may be to let go.""",,
 kohLoreMercyDeedBFFI,DialogOptionSelected,$option == koh_lore_deed_bffi,FireAll KoHLoreMercyOptions,"You speak of Menes Yaribay, of Olinadu, and of the false glove whose true counterpart lay untouched in the archives on Tartessus. You tell them how the trail led from a collector's vanity to a faulty forge hidden among the lost and the damned.
 
 The commander is silent long enough that the comm pickup catches only the low murmur of the Mercy's bridge.
 
-""Then you have seen the shape of the snare,"" they say at last. ""A false idol need not be worshipped openly. It is enough that frightened souls begin arranging their lives around possession of it, and call that arrangement duty.""
+""Then you have seen the shape of the snare,"" he says at last. ""A false idol need not be worshipped openly. It is enough that frightened souls begin arranging their lives around possession of it, and call that arrangement duty.""
 
-They lean closer to the camera.
+He leans closer to the camera.
 
 ""Remember the glove, Lost Lamb. Remember how many hands reached for a thing that should have been ash. When the hour comes, let Moloch's greedy maw take what the living cannot be trusted to keep.""",,
 kohLoreMercyDeedBack,DialogOptionSelected,$option == koh_lore_deed_back,FireAll KoHLoreMercyOptions,"The commander inclines their head and waits.",,
@@ -264,7 +264,7 @@ AdjustRep luddic_church 15","The Knight-Brother is silent for a long time. When 
 
 ""Lost Lamb... no. I cannot call you that epiphet any longer.""
 
-The Knight-Brother reaches down under his console and retrieves a small, thin box. They open it and hold its contents up to the camera. A simple, unadorned sword of steel. He brings the sword down and places his hands on its hilt.
+The Knight-Brother reaches down under his console and retrieves a small, thin box. He opens it and holds its contents up to the camera. A simple, unadorned sword of steel. He brings the sword down and places his hands on its hilt.
 
 ""Lamb of God. Your Great Labor is done. You have saved the lives of countless upon countless souls."" 
 
