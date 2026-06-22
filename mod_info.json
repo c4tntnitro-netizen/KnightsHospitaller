@@ -1,7 +1,7 @@
 {
   "id": "knights_hospitallar",
   "name": "Knights Hospitallar",
-  "author": "myau",
+  "author": "caccus",
   "utility": "false",
   "version": "0.1.0",
   "description": "Adds a Knights Hospitaller lore event, faction, and unique Hospitaller Invictus fleet at Gilead.",

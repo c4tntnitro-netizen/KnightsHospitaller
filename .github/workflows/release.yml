@@ -1,0 +1,57 @@
+name: Build release zip
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "Release*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish"
+        required: true
+        default: "v0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Starsector-ready zip
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $stage = Join-Path $env:RUNNER_TEMP "KnightsHospitallarRelease"
+          $mod = Join-Path $stage "Knights Hospitallar"
+
+          New-Item -ItemType Directory -Force -Path $mod | Out-Null
+
+          foreach ($item in @("data", "graphics", "jars", "src", "build.bat", "mod_info.json")) {
+            Copy-Item -LiteralPath $item -Destination $mod -Recurse -Force
+          }
+
+          Compress-Archive -Path $mod -DestinationPath "KnightsHospitallar.zip" -Force
+
+      - name: Publish release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tag = "${{ github.ref_name }}"
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $tag = "${{ github.event.inputs.tag }}"
+          }
+
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "Knights Hospitallar $tag" --notes "Download KnightsHospitallar.zip for the Starsector-ready mod folder. Do not use GitHub's Source code archives for installation."
+          }
+
+          gh release upload $tag KnightsHospitallar.zip --clobber
