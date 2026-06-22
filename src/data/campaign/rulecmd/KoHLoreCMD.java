@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -119,6 +120,13 @@ public class KoHLoreCMD extends BaseCommandPlugin {
         global.set("$koh_lore_great_labor_active", player.getBoolean(GREAT_LABOR_ACTIVE_KEY));
         global.set("$koh_lore_great_labor_completed", player.getBoolean(GREAT_LABOR_COMPLETED_KEY) ||
                 global.getBoolean(KoHLoreGreatLabor.COMPLETED_KEY));
+
+        FullName.Gender gender = FullName.Gender.ANY;
+        if (sector.getPlayerPerson() != null && sector.getPlayerPerson().getGender() != null) {
+            gender = sector.getPlayerPerson().getGender();
+        }
+        boolean feminine = gender == FullName.Gender.FEMALE;
+        global.set("$koh_lore_player_feminine", feminine);
     }
 
     private boolean isBlackHole(SectorEntityToken entity) {

@@ -14,7 +14,7 @@
 	"displayNameLongWithArticle":"the Order of the Knights Hospitaller",
 	"logo":"graphics/factions/luddic_church.png",
 	"crest":"graphics/factions/crest_luddic_church.png",
-	"showInIntelTab":true,
+	"showInIntelTab":false,
 	"shipNamePrefix":"HSP",
 	"shipNameSources":{
 		"LUDDIC_CHURCH":1,

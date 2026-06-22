@@ -2,7 +2,7 @@
 	"baseHullId":"invictus",
 	"skinHullId":"invictus_kh",
 	"hullName":"Invictus (KH)",
-	"descriptionPrefix":"A consecrated Invictus refit operated by the Knights Hospitaller. The four prow ballistic mounts have been welded over as integral Hellbore batteries, and the missile cells along the spine have been stripped out to extend the dorsal flight deck. In place of the Vast Hangar, the rearward bays have been refitted as the Gethsemane Rescue Bay, a flagship triage facility that recovers wounded crew across the entire fleet during and after engagements.",
+	"descriptionId":"invictus_kh",
 	"tags":["KH_bp","no_dealer","codex_unlockable"],
 	"tech":"Knights Hospitaller",
 	"spriteName":"graphics/ships/invictus/invictus_kh.png",
@@ -39,6 +39,6 @@
 			"mount": "HIDDEN",
 			"size": "LARGE",
 			"type": "LAUNCH_BAY"
-		},
-	],
+		}
+	]
 }

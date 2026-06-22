@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
+import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -40,7 +41,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String PEACEFUL_HANDOFF_KEY = "$koh_lore_peaceful_invictus_handoff";
     public static final String GETHSEMANE_LISTENER_KEY = "$koh_lore_gethsemane_listener_installed";
     public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v2";
-    public static final String KH_FACTION_ID = "knights_hospitaller";
+    public static final String KH_FACTION_ID = Factions.LUDDIC_CHURCH;
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
     public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
 
@@ -108,6 +109,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     private void setupRelations(boolean firstTime) {
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
+        if (Factions.LUDDIC_CHURCH.equals(KH_FACTION_ID)) return;
 
         FactionAPI kh = sector.getFaction(KH_FACTION_ID);
         if (kh == null) {
@@ -202,7 +204,11 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
     private void ensureHospitallerFleetComposition(CampaignFleetAPI fleet) {
         if (fleet == null) return;
-        if (fleet.getMemoryWithoutUpdate().getBoolean(COMPOSITION_KEY)) return;
+        ensureHospitallerFleetFaction(fleet);
+        if (fleet.getMemoryWithoutUpdate().getBoolean(COMPOSITION_KEY)) {
+            ensureMaleMercyCommander(fleet);
+            return;
+        }
 
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
@@ -216,6 +222,28 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         log.info("KoHLore: rebuilt existing Mercy fleet with Hospitaller Invictus composition");
     }
 
+    private void ensureMaleMercyCommander(CampaignFleetAPI fleet) {
+        if (fleet == null || fleet.getCommander() == null) return;
+        fleet.getCommander().setFaction(KH_FACTION_ID);
+        fleet.getCommander().setGender(FullName.Gender.MALE);
+        if (fleet.getCommander().getName() != null) {
+            fleet.getCommander().getName().setGender(FullName.Gender.MALE);
+        }
+    }
+
+    private void ensureHospitallerFleetFaction(CampaignFleetAPI fleet) {
+        if (fleet == null) return;
+        if (fleet.getFaction() == null || !KH_FACTION_ID.equals(fleet.getFaction().getId())) {
+            fleet.setFaction(KH_FACTION_ID, true);
+        }
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+            PersonAPI captain = member.getCaptain();
+            if (captain != null && !captain.isDefault()) {
+                captain.setFaction(KH_FACTION_ID);
+            }
+        }
+    }
+
     private void populateHospitallerFleet(CampaignFleetAPI fleet, FactionAPI faction, Random random) {
         fleet.setFaction(KH_FACTION_ID, true);
 
@@ -227,6 +255,8 @@ public class KoHLoreModPlugin extends BaseModPlugin {
                 faction, 7,
                 OfficerManagerEvent.SkillPickPreference.ANY,
                 false, null, true, true, 1, random);
+        commander.setGender(FullName.Gender.MALE);
+        commander.getName().setGender(FullName.Gender.MALE);
         commander.setRankId(Ranks.SPACE_ADMIRAL);
         commander.setPostId(Ranks.POST_FLEET_COMMANDER);
         commander.setPersonality(Personalities.STEADY);
