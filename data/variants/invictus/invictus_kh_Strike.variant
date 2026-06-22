@@ -1,12 +1,10 @@
 {
     "displayName": "Strike",
     "fluxCapacitors": 0,
-    "fluxVents": 31,
+    "fluxVents": 28,
     "goalVariant": true,
     "hullId": "invictus_kh",
-    "hullMods": [
-        "expanded_deck_crew"
-    ],
+    "hullMods": [],
     "permaMods": [],
     "sMods": [],
     "variantId": "invictus_kh_Strike",

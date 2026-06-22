@@ -14,7 +14,7 @@
 	"removeBuiltInWeapons":[],
 	"ordnancePoints":240,
 	"fighterBays":4,
-	"builtInMods":["blast_doors","gethsemane_rescue_bay"],
+	"builtInMods":["blast_doors","recovery_shuttles","gethsemane_rescue_bay"],
 	"builtInWings":[],
 	"weaponSlotChanges":{
 		"WS 001":{
