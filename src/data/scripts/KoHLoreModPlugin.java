@@ -40,7 +40,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String INVICTUS_GRANTED_KEY = "$koh_lore_invictus_granted";
     public static final String PEACEFUL_HANDOFF_KEY = "$koh_lore_peaceful_invictus_handoff";
     public static final String GETHSEMANE_LISTENER_KEY = "$koh_lore_gethsemane_listener_installed";
-    public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v2";
+    public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v3";
     public static final String KH_FACTION_ID = Factions.LUDDIC_CHURCH;
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
     public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
@@ -279,6 +279,9 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         }
         for (int i = 0; i < 10; i++) {
             addShip(fleet, "condor_Support");
+        }
+        for (int i = 0; i < 15; i++) {
+            addShip(fleet, "rapid_dragon_Standard");
         }
         assignHospitallerOfficers(fleet, faction, random);
 
