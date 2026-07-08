@@ -1,0 +1,22 @@
+{
+    "knownShips":{
+        "hulls":[
+            "rapid_dragon",
+        ],
+    },
+    "hullFrequency":{
+        "hulls":{
+            "rapid_dragon":0.6,
+        },
+    },
+    "shipRoles":{
+        "combatMedium":{
+            "includeDefault":true,
+            "rapid_dragon_Standard":6,
+        },
+        "combatFreighterMedium":{
+            "includeDefault":true,
+            "rapid_dragon_Standard":10,
+        },
+    },
+}

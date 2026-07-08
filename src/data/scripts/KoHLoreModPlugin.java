@@ -1,16 +1,19 @@
 package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.characters.FullName;
 import com.fs.starfarer.api.characters.PersonAPI;
@@ -23,12 +26,15 @@ import com.fs.starfarer.api.impl.campaign.ids.Personalities;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.VariantSource;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -40,11 +46,17 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     public static final String INVICTUS_GRANTED_KEY = "$koh_lore_invictus_granted";
     public static final String PEACEFUL_HANDOFF_KEY = "$koh_lore_peaceful_invictus_handoff";
     public static final String GETHSEMANE_LISTENER_KEY = "$koh_lore_gethsemane_listener_installed";
+    public static final String MERCY_PATROL_CONTROLLER_KEY = "$koh_lore_mercy_patrol_controller_v1";
+    public static final String MERCY_PATROL_ASSIGNMENT_KEY = "$koh_lore_mercy_patrol_assignments_v1";
     public static final String COMPOSITION_KEY = "$koh_lore_hospitaller_composition_v3";
     public static final String KH_FACTION_ID = Factions.LUDDIC_CHURCH;
+    public static final String RAPID_DRAGON_HULL_ID = "rapid_dragon";
     public static final String FLEET_NAME = "Knights Hospitaller Mercy";
     public static final String GABRIEL_PORTRAIT_ID = "koh_lore_gabriel_malachi";
     public static final float MERCY_ATTACK_REP_DELTA = -0.5f;
+    public static final float MERCY_REASSIGN_DISTANCE = 4500f;
+    public static final float MERCY_RECALL_DISTANCE = 9000f;
+    public static final float RAPID_DRAGON_LC_FREQUENCY = 0.6f;
 
     private static final Logger log = Global.getLogger(KoHLoreModPlugin.class);
 
@@ -62,15 +74,19 @@ public class KoHLoreModPlugin extends BaseModPlugin {
     @Override
     public void onNewGameAfterProcGen() {
         setupRelations(true);
+        installRapidDragonForLuddicChurch();
         installGethsemaneListener();
         spawnFleetIfNeeded();
+        installMercyPatrolController();
     }
 
     @Override
     public void onGameLoad(boolean newGame) {
         setupRelations(newGame);
+        installRapidDragonForLuddicChurch();
         installGethsemaneListener();
         spawnFleetIfNeeded();
+        installMercyPatrolController();
     }
 
     public static CampaignFleetAPI findHospitallerFleet() {
@@ -78,10 +94,21 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         if (sector == null) return null;
 
         for (StarSystemAPI system : sector.getStarSystems()) {
-            for (CampaignFleetAPI fleet : system.getFleets()) {
-                if (fleet.getMemoryWithoutUpdate().getBoolean(FLEET_MEMORY_KEY)) {
-                    return fleet;
-                }
+            CampaignFleetAPI found = findHospitallerFleetInLocation(system);
+            if (found != null) return found;
+        }
+        if (sector.getHyperspace() != null) {
+            CampaignFleetAPI found = findHospitallerFleetInLocation(sector.getHyperspace());
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private static CampaignFleetAPI findHospitallerFleetInLocation(LocationAPI location) {
+        if (location == null) return null;
+        for (CampaignFleetAPI fleet : location.getFleets()) {
+            if (fleet.getMemoryWithoutUpdate().getBoolean(FLEET_MEMORY_KEY)) {
+                return fleet;
             }
         }
         return null;
@@ -99,6 +126,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
                 Global.getSector().getMemoryWithoutUpdate().set(SPAWNED_KEY, true);
                 ensureHospitallerFleetComposition(existing);
                 ensureMercyListener(existing);
+                ensureMercyPatrol(existing, false);
                 return;
             }
             spawnFleet();
@@ -140,6 +168,22 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         }
     }
 
+    private void installRapidDragonForLuddicChurch() {
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+
+        FactionAPI church = sector.getFaction(Factions.LUDDIC_CHURCH);
+        if (church == null) {
+            log.warn("KoHLore: Luddic Church faction not loaded; cannot add Rapid Dragon");
+            return;
+        }
+
+        if (!church.getKnownShips().contains(RAPID_DRAGON_HULL_ID)) {
+            church.addKnownShip(RAPID_DRAGON_HULL_ID, false);
+        }
+        church.getHullFrequency().put(RAPID_DRAGON_HULL_ID, RAPID_DRAGON_LC_FREQUENCY);
+    }
+
     private void installGethsemaneListener() {
         SectorAPI sector = Global.getSector();
         if (sector == null) return;
@@ -149,6 +193,15 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         sector.addScript(listener);
         sector.getListenerManager().addListener(listener);
         sector.getMemoryWithoutUpdate().set(GETHSEMANE_LISTENER_KEY, true);
+    }
+
+    private void installMercyPatrolController() {
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+        if (sector.getMemoryWithoutUpdate().getBoolean(MERCY_PATROL_CONTROLLER_KEY)) return;
+
+        sector.addScript(new MercyPatrolController());
+        sector.getMemoryWithoutUpdate().set(MERCY_PATROL_CONTROLLER_KEY, true);
     }
 
     private void enableBlackHoleInteractions() {
@@ -197,7 +250,7 @@ public class KoHLoreModPlugin extends BaseModPlugin {
 
         canaan.addEntity(fleet);
         fleet.setLocation(gilead.getLocation().x + 300f, gilead.getLocation().y);
-        fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, gilead, 999999f, "standing relief watch");
+        ensureMercyPatrol(fleet, true);
 
         sector.getMemoryWithoutUpdate().set(SPAWNED_KEY, true);
         log.info("KoHLore: spawned Hospitaller Invictus around Gilead");
@@ -300,6 +353,101 @@ public class KoHLoreModPlugin extends BaseModPlugin {
         fleet.forceSync();
     }
 
+    private static StarSystemAPI getCanaan() {
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return null;
+        return sector.getStarSystem("Canaan");
+    }
+
+    private static SectorEntityToken getGilead(StarSystemAPI canaan) {
+        if (canaan == null) return null;
+        SectorEntityToken gilead = canaan.getEntityById("gilead");
+        if (gilead != null) return gilead;
+
+        for (SectorEntityToken planet : canaan.getPlanets()) {
+            if ("Gilead".equals(planet.getName())) {
+                return planet;
+            }
+        }
+        return null;
+    }
+
+    private static List<SectorEntityToken> getMercyPatrolTargets(StarSystemAPI canaan, SectorEntityToken gilead) {
+        List<SectorEntityToken> targets = new ArrayList<SectorEntityToken>();
+        if (gilead != null) targets.add(gilead);
+        if (canaan == null) return targets;
+
+        for (SectorEntityToken station : canaan.getEntitiesWithTag(Tags.STATION)) {
+            if (station == null || station == gilead) continue;
+            if (station.getMarket() != null && KH_FACTION_ID.equals(station.getMarket().getFactionId())) {
+                targets.add(station);
+            }
+        }
+        return targets;
+    }
+
+    private static void applyMercyFleetFlags(CampaignFleetAPI fleet) {
+        if (fleet == null) return;
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORES_OTHER_FLEETS, true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_IGNORED_BY_OTHER_FLEETS, true);
+        fleet.setTransponderOn(true);
+    }
+
+    public static void ensureMercyPatrol(CampaignFleetAPI fleet, boolean force) {
+        if (fleet == null) return;
+        SectorAPI sector = Global.getSector();
+        if (sector == null) return;
+        if (sector.getMemoryWithoutUpdate().getBoolean(INVICTUS_GRANTED_KEY) ||
+                sector.getMemoryWithoutUpdate().getBoolean(ATTACKED_MERCY_KEY)) {
+            return;
+        }
+        if (!fleet.getMemoryWithoutUpdate().getBoolean(FLEET_MEMORY_KEY)) return;
+        if (fleet.getMemoryWithoutUpdate().getBoolean(PEACEFUL_HANDOFF_KEY)) return;
+        if (fleet.getBattle() != null || fleet.isInHyperspaceTransition()) return;
+
+        StarSystemAPI canaan = getCanaan();
+        SectorEntityToken gilead = getGilead(canaan);
+        if (canaan == null || gilead == null) return;
+
+        applyMercyFleetFlags(fleet);
+        if (fleet.getContainingLocation() != canaan) {
+            if (fleet.getContainingLocation() != null) {
+                fleet.getContainingLocation().removeEntity(fleet);
+            }
+            canaan.addEntity(fleet);
+            force = true;
+        }
+
+        float distFromGilead = Misc.getDistance(fleet.getLocation(), gilead.getLocation());
+        if (distFromGilead > MERCY_RECALL_DISTANCE) {
+            fleet.setLocation(gilead.getLocation().x + 300f, gilead.getLocation().y);
+            force = true;
+        }
+
+        List<SectorEntityToken> targets = getMercyPatrolTargets(canaan, gilead);
+        FleetAssignmentDataAPI current = fleet.getCurrentAssignment();
+        SectorEntityToken currentTarget = current == null ? null : current.getTarget();
+        FleetAssignment assignment = current == null ? null : current.getAssignment();
+        boolean validAssignment = assignment == FleetAssignment.ORBIT_PASSIVE ||
+                assignment == FleetAssignment.GO_TO_LOCATION ||
+                assignment == FleetAssignment.PATROL_SYSTEM;
+        boolean validTarget = currentTarget != null && targets.contains(currentTarget);
+        boolean hasCurrentPatrolPlan = fleet.getMemoryWithoutUpdate().getBoolean(MERCY_PATROL_ASSIGNMENT_KEY);
+
+        if (!force && hasCurrentPatrolPlan && validAssignment && validTarget && distFromGilead <= MERCY_REASSIGN_DISTANCE) {
+            return;
+        }
+
+        fleet.clearAssignments();
+        fleet.getMemoryWithoutUpdate().set(MERCY_PATROL_ASSIGNMENT_KEY, true);
+        for (SectorEntityToken target : targets) {
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, target, 2f, "moving to render aid");
+            fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 4f, "standing relief watch");
+        }
+        fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, gilead, 6f, "receiving the wounded");
+    }
+
     private static void configureGabrielPhiladelphi(PersonAPI person) {
         if (person == null) return;
         person.setFaction(KH_FACTION_ID);
@@ -379,6 +527,38 @@ public class KoHLoreModPlugin extends BaseModPlugin {
             sector.getCampaignUI().addMessage(
                     "Your attack on the Knights Hospitaller Mercy is condemned as an atrocity across the Sector.",
                     Misc.getNegativeHighlightColor());
+        }
+    }
+
+    public static class MercyPatrolController implements EveryFrameScript {
+        private final IntervalUtil check = new IntervalUtil(0.05f, 0.1f);
+
+        @Override
+        public boolean isDone() {
+            return false;
+        }
+
+        @Override
+        public boolean runWhilePaused() {
+            return false;
+        }
+
+        @Override
+        public void advance(float amount) {
+            SectorAPI sector = Global.getSector();
+            if (sector == null) return;
+            if (sector.getMemoryWithoutUpdate().getBoolean(INVICTUS_GRANTED_KEY) ||
+                    sector.getMemoryWithoutUpdate().getBoolean(ATTACKED_MERCY_KEY)) {
+                return;
+            }
+
+            check.advance(amount);
+            if (!check.intervalElapsed()) return;
+
+            CampaignFleetAPI mercy = findHospitallerFleet();
+            if (mercy == null) return;
+            ensureMercyListener(mercy);
+            ensureMercyPatrol(mercy, false);
         }
     }
 
