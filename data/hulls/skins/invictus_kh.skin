@@ -10,7 +10,7 @@
 	"systemId":"reservewing",
 	"removeWeaponSlots":["WS 004", "WS 007"],
 	"removeEngineSlots":[],
-	"removeBuiltInMods":["hbi","vast_hangar"],
+	"removeBuiltInMods":["vast_hangar"],
 	"removeBuiltInWeapons":[],
 	"ordnancePoints":240,
 	"fighterBays":4,
